@@ -1,0 +1,18 @@
+
+spring:
+    application:
+        name: consumer-config-8003
+
+    cloud:
+        nacos:
+            config:
+                server-addr: 192.168.5.13:8868
+                username: nacos
+                password: nacos
+                file-extension: yml
+                # 默认为DEFAULT_GROUP 切换分组
+                group: MY_GROUP
+                namespace: e6213f3b-c276-4b15-b0a8-352361de4b6b
+    config:
+        import:
+        - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}

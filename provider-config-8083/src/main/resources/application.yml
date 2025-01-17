@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: provider-config-8083
+
+
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.5.13:8868
+        username: nacos
+        password: nacos
+        file-extension: yml
+        # 默认为DEFAULT_GROUP 切换分组
+        group: MY_GROUP
+        namespace: e6213f3b-c276-4b15-b0a8-352361de4b6b
+
+  config:
+    import:
+       - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+#      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+#  profiles:
+#    active: dev
+
+
+    # 同一个组内的微服务可以进行配置共享
+#        shared-configs[0]:
+#          data-id: sharedConfig.yml
+#          refresh: true
+#          #                shared-configs[1]:
+#          #                    data-id: sharedConfig1.yml
+#          #                    refresh: true
+#          #不在一个组内的微服务也可以共享配置
+#        extension-configs[0]:
+#          data-id: extensionConfig.yml
+#          refresh: true
+
+
+
+
+
+
+
+
