@@ -25,6 +25,7 @@
         <module>provider-config-8083</module>
         <module>consumer-nacos-8002</module>
         <module>consumer-config-8003</module>
+        <module>consumer-feign-8004</module>
     </modules>
 
 

@@ -1,0 +1,17 @@
+server:
+    port: 9000
+
+spring:
+    application:
+        name: 05-gateway-config-9000
+
+    cloud:
+        nacos:
+            discovery:
+                server-addr: localhost:8868
+                username: nacos
+                password: nacos
+#               默认为 true - 设置为false 则不向nacos中注册
+                enabled: true
+                #默认为true 表示临时实例
+                ephemeral: true
