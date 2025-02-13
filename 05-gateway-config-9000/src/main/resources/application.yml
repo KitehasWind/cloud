@@ -1,17 +1,114 @@
 server:
     port: 9000
 
-spring:
-    application:
-        name: 05-gateway-config-9000
 
-    cloud:
-        nacos:
-            discovery:
-                server-addr: localhost:8868
-                username: nacos
-                password: nacos
-#               默认为 true - 设置为false 则不向nacos中注册
-                enabled: true
-                #默认为true 表示临时实例
-                ephemeral: true
+spring:
+  application:
+    name: 05-gateway-config-9000
+  cloud:
+    gateway:
+      routes:
+        - id: my_prefixPath_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/header
+          filters:
+            - PrefixPath=/info
+
+        - id: my_stripPrefix _route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/123/info/header
+          filters:
+            #注意不能有空格
+            - StripPrefix=1
+        - id: my_request_limit_route
+          uri:  http://localhost:8080
+          predicates:
+            - Path=/info/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@useKeyResolver}"
+                redis-rate-limiter.replenishRate: 2
+                redis-rate-limiter.burstCapacity: 5
+                redis-rate-limiter.requestedTokens: 1
+
+
+
+
+        - id: my_filter_fall_back_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/info/**
+            # 降级处理过滤器
+            # 第一个 name 属性用于指定要使用的 filter 类型，不能随意写。
+            # args 是对指定 filter 的配置参数。
+            # 第二个 name 属性用于指定当前所使用断路器的名称，可以随意。
+            # fallbackUri 属性用于指定发生断路后要提交的降级 URI
+          filters:
+            - name : CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/fb
+
+
+
+        - id: my_filter_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/info/**
+          filters:
+            # 向请求中添加请求头 -  或者 添加请求参数的过滤器
+            - AddRequestHeader=X-Request-Color,blue
+            - AddRequestParameter=Check ,One
+
+
+
+        - id:  auth_password_route
+          uri: https://www.baidu.com
+          predicates:
+            - Auth=zhangsan, 12345
+
+        - id: auth_token_route
+          uri: https://www.baidu.com
+          predicates:
+            - Token=12345
+
+        - id: consumer_route
+          uri: http://localhost:8001
+          predicates:
+            - Path=/consumer/**
+
+        - id: provider_route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/provider/**
+
+
+        #            断言1
+        - id: provider_route2
+          uri: https://www.baidu.com
+          predicates:
+#            Headers 验证  - 多个Header表示&的关系 X-Request-Id 和  Color 需要同时满足
+            - Header=X-Request-Id, 123
+            - Header=Color, gr.+
+        # 断言2  断言1 之间为或的关系
+        - id: header_route
+          uri: https://www.baidu.com
+          predicates:
+            - Header=test, test
+              #Path验证
+              #            - Path=/provider/**
+              #            Headers 验证  - 多个Header表示&的关系
+#            时间验证
+            #                - After=2025-01-28T18:28:18.049868700+08:00
+            #                - Before=2025-01-28T18:28:18.049868700+08:00
+            # Cookie验证
+            #                - Cookie=city,xian
+            # Header 验证
+            #                - Header=X-Request-id,6
+            # host 验证
+            #                - host=127.0.0.1
+
+        #            断言2

@@ -1,0 +1,32 @@
+server:
+    port: 9001
+spring:
+    cloud:
+        gateway:
+            routes:
+#            断言1
+            - id: provider_route
+              uri: https://www.baidu.com
+              predicates:
+#                - After=2025-01-28T18:28:18.049868700+08:00
+#                - Before=2025-01-28T18:28:18.049868700+08:00
+                # Cookie验证
+#                - Cookie=city,xian
+                # Header 验证
+#                - Header=X-Request-id,6
+                # host 验证
+#                - host=127.0.0.1
+                #Path验证
+                - Path=/provider/**
+#            断言2
+            - id: consumer_route
+              uri: https://www.baidu.com
+              predicates:
+                - Path=/consumer/**
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+
+
+spring:
+    application:
+        name: 05-showinfo-8080
+
+
+
+server:
+    port: 8080
+

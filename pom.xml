@@ -26,6 +26,9 @@
         <module>consumer-nacos-8002</module>
         <module>consumer-config-8003</module>
         <module>consumer-feign-8004</module>
+        <module>05-gateway-config-9000</module>
+        <module>05-gateway-api-9000</module>
+        <module>05-showinfo-8080</module>
     </modules>
 
 
